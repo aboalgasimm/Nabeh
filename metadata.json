@@ -1,0 +1,5 @@
+{
+  "name": "Nabeh - Absher Risk Intelligence",
+  "description": "A real-time driver and road risk prediction platform for the Absher ecosystem, featuring live telemetry analysis, dual-engine risk fusion, and localized alerting.",
+  "requestFramePermissions": []
+}
