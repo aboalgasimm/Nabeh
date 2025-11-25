@@ -1,8 +1,8 @@
 import { Language } from "./types";
 
 export const APP_NAME = {
-  [Language.EN]: "Nabeh",
-  [Language.AR]: "نبه"
+  [Language.EN]: "Nabaha",
+  [Language.AR]: "نباهة"
 };
 
 export const UI_TEXT = {
@@ -24,7 +24,7 @@ export const UI_TEXT = {
     viewDetails: "View Details",
     analyzing: "Analyzing...",
     close: "Close",
-    aiInsight: "Nabeh AI Insight",
+    aiInsight: "Nabaha AI Insight",
     systemStatus: "System Status: Operational",
     connectAbsher: "Absher Integration Active",
     riskTrends: "Risk Trends (24h)",
@@ -71,7 +71,7 @@ export const UI_TEXT = {
     viewDetails: "عرض التفاصيل",
     analyzing: "جاري التحليل...",
     close: "إغلاق",
-    aiInsight: "رؤية نبه الذكية",
+    aiInsight: "رؤية نباهة الذكية",
     systemStatus: "حالة النظام: تشغيلي",
     connectAbsher: "تم الربط مع أبشر",
     riskTrends: "مؤشرات المخاطر (٢٤ ساعة)",

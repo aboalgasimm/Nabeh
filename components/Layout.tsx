@@ -1,7 +1,8 @@
 import React from 'react';
 import { Language } from '../types';
-import { UI_TEXT, APP_NAME } from '../constants';
+import { UI_TEXT } from '../constants';
 import { LayoutDashboard, Map as MapIcon, BarChart3, AlertTriangle, Globe, Menu } from 'lucide-react';
+import { NabahaLogo } from './NabahaLogo';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,9 +29,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentLang, onToggleL
       
       {/* Sidebar Desktop */}
       <aside className={`hidden md:flex flex-col w-64 bg-white border-${isRTL ? 'l' : 'r'} border-slate-200 fixed h-full z-10`}>
-        <div className="p-6 flex items-center gap-3 border-b border-slate-100">
-          <div className="w-8 h-8 bg-absher-green rounded-lg flex items-center justify-center text-white font-bold">ن</div>
-          <h1 className="text-xl font-bold text-slate-800">{APP_NAME[currentLang]}</h1>
+        <div className="h-20 flex items-center justify-center border-b border-slate-100 px-4">
+          <NabahaLogo className="h-12 w-auto" />
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
@@ -59,11 +59,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentLang, onToggleL
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed w-full bg-white z-20 border-b border-slate-200 p-4 flex justify-between items-center">
-         <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-absher-green rounded-lg flex items-center justify-center text-white font-bold">ن</div>
-            <h1 className="text-lg font-bold text-slate-800">{APP_NAME[currentLang]}</h1>
-         </div>
+      <div className="md:hidden fixed w-full bg-white z-20 border-b border-slate-200 p-4 flex justify-between items-center h-16">
+         <NabahaLogo className="h-8 w-auto" />
          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600">
            <Menu />
          </button>
@@ -90,7 +87,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentLang, onToggleL
        )}
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col ${isRTL ? 'md:mr-64' : 'md:ml-64'} pt-20 md:pt-0 transition-all`}>
+      <main className={`flex-1 flex flex-col ${isRTL ? 'md:mr-64' : 'md:ml-64'} pt-16 md:pt-0 transition-all`}>
         {/* Top Bar */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8 sticky top-0 z-10 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-700 hidden md:block">
