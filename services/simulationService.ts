@@ -1,4 +1,4 @@
-import { VehicleTelemetry, RiskLevel, Incident } from "../types";
+import { VehicleTelemetry, RiskLevel, Incident, RoadZone } from "../types";
 
 const DRIVER_NAMES_AR = ["أحمد الفهد", "خالد العتيبي", "محمد سالم", "فهد الدوسري", "عمر الغامدي", "عبدالله العنزي", "سلمان القحطاني", "فيصل المطيري", "سعد المالكي", "تركي آل الشيخ", "ياسر القحطاني", "بدر الشمري"];
 
@@ -11,7 +11,6 @@ const RIYADH_BOUNDS = {
 };
 
 // Define explicit road networks as arrays of [x, y] coordinates (0-100 scale)
-// This ensures the visual map lines match exactly where the cars drive.
 export const ROAD_NETWORKS = [
   // Outer Ring Road (Highway)
   { id: 'ring_road', width: 4, type: 'highway', points: [{x: 5, y: 5}, {x: 95, y: 5}, {x: 95, y: 95}, {x: 5, y: 95}, {x: 5, y: 5}] },
@@ -30,6 +29,17 @@ export const ROAD_NETWORKS = [
   
   // Diagonal Connector
   { id: 'diag_1', width: 2, type: 'street', points: [{x: 5, y: 50}, {x: 50, y: 25}, {x: 95, y: 5}] }
+];
+
+// Define Hazardous Road Zones (e.g. Bumpy roads)
+export const ROAD_ZONES: RoadZone[] = [
+  {
+    id: 'zone_bumpy_1',
+    type: 'Bumpy',
+    // Top right corner of the ring road
+    bounds: { xMin: 60, xMax: 95, yMin: 0, yMax: 10 }, 
+    label: 'طريق وعر'
+  }
 ];
 
 // Helper to interpolate position along a path
@@ -89,7 +99,8 @@ export const generateInitialVehicles = (count: number): VehicleTelemetry[] => {
       factors: [],
       status: 'active',
       lastUpdate: new Date().toISOString(),
-      heading
+      heading,
+      verticalG: 1.0 // Initial G-Force
     };
   });
 };
@@ -132,19 +143,45 @@ export const updateVehicleData = (vehicles: VehicleTelemetry[]): VehicleTelemetr
     
     newSpeed = Math.round(newSpeed);
 
+    // Check Road Zones (Bumpy Roads)
+    const inBumpyZone = ROAD_ZONES.some(zone => 
+      zone.type === 'Bumpy' && 
+      x >= zone.bounds.xMin && x <= zone.bounds.xMax &&
+      y >= zone.bounds.yMin && y <= zone.bounds.yMax
+    );
+
+    // Simulate Vertical G-Force
+    let verticalG = 1.0 + (Math.random() * 0.05 - 0.025); // Normal driving noise
+    
     // Calculate Risk
     let newRiskScore = v.riskScore;
     let factors: string[] = [];
 
+    // Base Speed Risk
     if (newSpeed > 120) {
       newRiskScore += 2;
       factors.push("سرعة زائدة");
     } else {
       newRiskScore = Math.max(10, newRiskScore - 1);
     }
+
+    // Bumpy Road / G-Force Logic
+    if (inBumpyZone) {
+      // Simulate impacts: Random spikes between 1.5G and 3.5G
+      verticalG = 1.5 + (Math.random() * 2.0); 
+      
+      factors.push("طريق وعر");
+      factors.push("صدمة تعليق"); // Suspension shock
+
+      // If vehicle is speeding in a bumpy zone, risk skyrockets
+      if (newSpeed > 80) {
+        newRiskScore += 5;
+        factors.push("قيادة سريعة في طريق وعر");
+      }
+    }
     
     // Random incident trigger
-    if (Math.random() > 0.99) {
+    if (Math.random() > 0.995) { // Slightly lowered freq
        newRiskScore += 10;
        factors.push("تجاوز خطر");
     }
@@ -166,7 +203,8 @@ export const updateVehicleData = (vehicles: VehicleTelemetry[]): VehicleTelemetr
       riskLevel: level,
       factors: [...new Set(factors)], 
       lastUpdate: new Date().toISOString(),
-      heading
+      heading,
+      verticalG
     };
   });
 };

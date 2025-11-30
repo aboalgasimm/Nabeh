@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { VehicleTelemetry, GeminiAnalysis, LocationInsight, Language } from '../types';
 import { analyzeRisk, analyzeLocationContext } from '../services/geminiService';
 import { UI_TEXT } from '../constants';
-import { X, AlertTriangle, ShieldCheck, Gauge, Bot, MapPin, ExternalLink } from 'lucide-react';
+import { X, AlertTriangle, ShieldCheck, Gauge, Bot, MapPin, ExternalLink, Activity } from 'lucide-react';
 import { Button } from './Button';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Props {
   vehicle: VehicleTelemetry | null;
@@ -33,6 +34,30 @@ export const RiskAnalysisModal: React.FC<Props> = ({ vehicle, onClose, lang }) =
       });
     }
   }, [vehicle, lang]);
+
+  // Generate simulated telemetry history for the chart based on current state
+  const telemetryData = useMemo(() => {
+    if (!vehicle) return [];
+    
+    return Array.from({ length: 20 }).map((_, i) => {
+      // Create a plausible history. 
+      // If current G is high, show a spike at the end.
+      const isRecent = i > 15;
+      const baseG = 1.0;
+      // If vehicle.verticalG is high, we ramp up to it, otherwise random noise
+      let gForce = baseG + (Math.random() * 0.1 - 0.05);
+      
+      if (vehicle.verticalG > 1.4 && isRecent) {
+         gForce = vehicle.verticalG * (0.8 + Math.random() * 0.2);
+      }
+
+      return {
+        time: `-${20 - i}s`,
+        gForce: parseFloat(gForce.toFixed(2)),
+        speed: vehicle.speed + (Math.random() * 4 - 2)
+      };
+    });
+  }, [vehicle]);
 
   if (!vehicle) return null;
 
@@ -71,6 +96,44 @@ export const RiskAnalysisModal: React.FC<Props> = ({ vehicle, onClose, lang }) =
                 <div className={`text-2xl font-mono font-bold ${vehicle.speed > 120 ? 'text-red-600' : 'text-slate-800'}`}>
                   {vehicle.speed} <span className="text-sm text-slate-500">km/h</span>
                 </div>
+             </div>
+          </div>
+
+          {/* Telemetry Chart - NEW */}
+          <div className="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+             <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                <Activity size={18} className="text-blue-500" />
+                {t.telemetry} - {t.verticalG}
+             </h4>
+             <div className="h-32 w-full" dir="ltr">
+                <ResponsiveContainer width="100%" height="100%">
+                   <AreaChart data={telemetryData}>
+                      <defs>
+                         <linearGradient id="colorG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2}/>
+                            <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                         </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="time" hide />
+                      <YAxis domain={[0, 4]} hide />
+                      <Tooltip 
+                         contentStyle={{ borderRadius: '8px', border: 'none', fontSize: '12px' }}
+                         itemStyle={{ color: '#64748b' }}
+                         labelStyle={{ display: 'none' }}
+                         formatter={(value: number) => [`${value}G`, 'Vertical Force']}
+                      />
+                      <Area type="monotone" dataKey="gForce" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorG)" isAnimationActive={false} />
+                      {/* Normal G Line */}
+                      <ReferenceLine y={1} stroke="#94a3b8" strokeDasharray="3 3" />
+                   </AreaChart>
+                </ResponsiveContainer>
+             </div>
+             <div className="flex justify-between items-center mt-2 text-xs text-slate-500 px-1">
+                <span>{t.timestamp} (-20s)</span>
+                <span className={vehicle.verticalG > 1.5 ? "text-red-500 font-bold" : "text-emerald-600"}>
+                   {vehicle.verticalG > 1.5 ? t.suspensionAlert : t.gForceNormal}
+                </span>
              </div>
           </div>
 
@@ -156,3 +219,4 @@ export const RiskAnalysisModal: React.FC<Props> = ({ vehicle, onClose, lang }) =
     </div>
   );
 };
+import { ReferenceLine } from 'recharts';

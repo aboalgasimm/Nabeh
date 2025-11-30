@@ -10,6 +10,16 @@ export enum RiskLevel {
   CRITICAL = 'Critical'
 }
 
+export type RoadConditionType = 'Normal' | 'Bumpy' | 'Construction';
+
+export interface RoadZone {
+  id: string;
+  type: RoadConditionType;
+  // Simple rectangular bounding box for demo purposes
+  bounds: { xMin: number; xMax: number; yMin: number; yMax: number }; 
+  label: string;
+}
+
 export interface Coordinates {
   x: number; // Relative 0-100 for demo map
   y: number; // Relative 0-100 for demo map
@@ -29,6 +39,7 @@ export interface VehicleTelemetry {
   status: 'active' | 'idle' | 'incident';
   lastUpdate: string;
   heading?: number;
+  verticalG: number; // Vertical G-Force (1.0 is normal gravity)
 }
 
 export interface Incident {

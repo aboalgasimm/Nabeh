@@ -51,7 +51,14 @@ export const UI_TEXT = {
     recommendations: "Recommendations",
     sources: "Sources",
     mapDescription: "Real-time geospatial risk tracking. High-risk vehicles pulse red. Click any vehicle for detailed AI analysis.",
-    newVehicles: "+2 new in last hour"
+    newVehicles: "+2 new in last hour",
+    roadQuality: "Road Quality",
+    bumpyRoadAlert: "Bumpy Road Detected",
+    caution: "Caution",
+    telemetry: "Telemetry",
+    verticalG: "Vertical G-Force",
+    suspensionAlert: "Suspension Shock",
+    gForceNormal: "Normal (1.0G)"
   },
   [Language.AR]: {
     dashboard: "لوحة المتابعة الحية",
@@ -98,6 +105,13 @@ export const UI_TEXT = {
     recommendations: "التوصيات",
     sources: "المصادر",
     mapDescription: "تتبع المخاطر الجغرافية في الوقت الفعلي. المركبات عالية الخطورة تومض باللون الأحمر. اضغط على أي مركبة للتحليل الذكي.",
-    newVehicles: "+٢ مركبات جديدة في آخر ساعة"
+    newVehicles: "+٢ مركبات جديدة في آخر ساعة",
+    roadQuality: "جودة الطرق",
+    bumpyRoadAlert: "طريق وعر",
+    caution: "تنبيه",
+    telemetry: "القياسات الحيوية",
+    verticalG: "قوة الجاذبية (G-Force)",
+    suspensionAlert: "صدمة في نظام التعليق",
+    gForceNormal: "طبيعي (1.0G)"
   }
 };

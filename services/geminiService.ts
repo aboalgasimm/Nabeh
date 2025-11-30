@@ -20,11 +20,13 @@ export const analyzeRisk = async (vehicle: VehicleTelemetry, lang: Language): Pr
       
       Vehicle ID: ${vehicle.id}
       Speed: ${vehicle.speed} km/h
+      Vertical G-Force: ${vehicle.verticalG.toFixed(2)}G (Normal is ~1.0G. >1.5G indicates impact/bump)
       Risk Score: ${vehicle.riskScore}/100
       Risk Factors: ${vehicle.factors.join(', ')}
       Status: ${vehicle.status}
 
       Provide a concise analysis output in JSON format.
+      If Vertical G-Force is high (>1.5), explicitly mention potential road damage or suspension issues.
       IMPORTANT: The output MUST be in ${lang === Language.EN ? 'English' : 'Arabic'}.
     `;
 

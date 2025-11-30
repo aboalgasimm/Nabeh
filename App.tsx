@@ -6,7 +6,7 @@ import { Button } from './components/Button';
 import { Language, VehicleTelemetry, Incident } from './types';
 import { UI_TEXT } from './constants';
 import { generateInitialVehicles, updateVehicleData, generateMockIncidents } from './services/simulationService';
-import { Activity, Users, AlertOctagon, TrendingUp, Zap, History, AlertTriangle } from 'lucide-react';
+import { Activity, Users, AlertOctagon, TrendingUp, Zap, History, AlertTriangle, Construction } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 const App: React.FC = () => {
@@ -263,11 +263,11 @@ const App: React.FC = () => {
 
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                   <span className="text-slate-500 text-sm font-medium">{t.systemLatency}</span>
-                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><Zap size={20} /></div>
+                   <span className="text-slate-500 text-sm font-medium">{t.roadQuality}</span>
+                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Construction size={20} /></div>
                 </div>
-                <div className="text-3xl font-bold text-slate-800" dir="ltr">24ms</div>
-                <div className="text-xs text-slate-400 mt-2">{t.realTimeSync}</div>
+                <div className="text-lg font-bold text-slate-800 mb-1">{t.bumpyRoadAlert}</div>
+                <div className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded inline-block">{t.caution}</div>
               </div>
             </div>
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { VehicleTelemetry, RiskLevel, Language } from '../types';
 import { UI_TEXT } from '../constants';
-import { ROAD_NETWORKS } from '../services/simulationService';
+import { ROAD_NETWORKS, ROAD_ZONES } from '../services/simulationService';
+import { AlertTriangle } from 'lucide-react';
 
 interface RiskMapProps {
   vehicles: VehicleTelemetry[];
@@ -25,6 +26,11 @@ export const RiskMap: React.FC<RiskMapProps> = ({ vehicles, onVehicleClick, lang
                 <rect x="24" y="2" width="15" height="40" fill="#1e293b" />
                 <rect x="2" y="24" width="20" height="15" fill="#1e293b" />
                 <rect x="42" y="10" width="30" height="30" fill="#1e293b" />
+             </pattern>
+             {/* Hazard Pattern for Bumpy Roads */}
+             <pattern id="hazard-stripe" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+               <rect x="0" y="0" width="5" height="10" fill="#fbbf24" fillOpacity="0.3" />
+               <rect x="5" y="0" width="5" height="10" fill="transparent" />
              </pattern>
            </defs>
            <rect width="100%" height="100%" fill="url(#city-blocks)" />
@@ -79,16 +85,47 @@ export const RiskMap: React.FC<RiskMapProps> = ({ vehicles, onVehicleClick, lang
              </g>
            );
         })}
+
+        {/* Draw Bumpy Zones */}
+        {ROAD_ZONES.map(zone => (
+           <g key={zone.id}>
+             <rect 
+               x={zone.bounds.xMin} 
+               y={zone.bounds.yMin} 
+               width={zone.bounds.xMax - zone.bounds.xMin} 
+               height={zone.bounds.yMax - zone.bounds.yMin} 
+               fill="url(#hazard-stripe)"
+               stroke="#fbbf24"
+               strokeWidth="0.5"
+               strokeDasharray="2,2"
+               opacity="0.8"
+             />
+           </g>
+        ))}
+
       </svg>
       
-      {/* 3. Context Labels (Street Names) */}
+      {/* 3. Context Labels & Icons */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
          <div className="absolute top-[3%] left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-500 bg-[#0f172a]/80 px-2 rounded tracking-widest uppercase">الطريق الدائري الشمالي</div>
          <div className="absolute bottom-[3%] left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-500 bg-[#0f172a]/80 px-2 rounded tracking-widest uppercase">الطريق الدائري الجنوبي</div>
          <div className="absolute top-1/2 left-[5%] -translate-y-1/2 -rotate-90 text-[10px] font-bold text-slate-500 bg-[#0f172a]/80 px-2 rounded tracking-widest uppercase">طريق جدة</div>
-         <div className="absolute top-[25%] left-1/2 text-[10px] font-bold text-slate-600 -rotate-12">طريق العليا</div>
-         <div className="absolute top-[50%] right-[2%] translate-x-0 -rotate-90 text-[10px] font-bold text-slate-500 bg-[#0f172a]/80 px-2 rounded tracking-widest uppercase">طريق المطار</div>
-         <div className="absolute top-[45%] left-[45%] text-xs font-bold text-slate-700 opacity-50">حي النخيل</div>
+         
+         {/* Bumpy Road Labels */}
+         {ROAD_ZONES.map(zone => (
+            <div 
+              key={zone.id}
+              className="absolute flex items-center gap-1 bg-amber-900/80 border border-amber-500/50 text-amber-200 px-2 py-1 rounded shadow-lg backdrop-blur-sm"
+              style={{ 
+                left: `${(zone.bounds.xMin + zone.bounds.xMax)/2}%`, 
+                top: `${(zone.bounds.yMin + zone.bounds.yMax)/2 + 5}%`,
+                transform: 'translate(-50%, 0)' 
+              }}
+            >
+               <AlertTriangle size={12} className="text-amber-400" />
+               <span className="text-[10px] font-bold whitespace-nowrap">{t.bumpyRoadAlert}</span>
+            </div>
+         ))}
       </div>
 
       {/* 4. Radar Scan Effect */}
@@ -168,6 +205,7 @@ export const RiskMap: React.FC<RiskMapProps> = ({ vehicles, onVehicleClick, lang
         <div className="flex items-center gap-2 text-slate-300"><span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span> {t.safe}</div>
         <div className="flex items-center gap-2 text-slate-300"><span className="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]"></span> {t.moderate}</div>
         <div className="flex items-center gap-2 text-slate-300"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span> {t.critical}</div>
+        <div className="flex items-center gap-2 text-slate-300"><span className="w-2 h-2 bg-amber-500/30 border border-amber-500/50"></span> {t.bumpyRoadAlert}</div>
       </div>
     </div>
   );

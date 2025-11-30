@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const NabahaLogo: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 260 60" className={className} xmlns="http://www.w3.org/2000/svg" fill="none" style={{ direction: 'ltr' }}>
+  <svg viewBox="0 0 280 60" className={className} xmlns="http://www.w3.org/2000/svg" fill="none" style={{ direction: 'ltr' }}>
     <defs>
       <linearGradient id="compassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#94a3b8" />
@@ -14,7 +14,7 @@ export const NabahaLogo: React.FC<{ className?: string }> = ({ className }) => (
       </linearGradient>
     </defs>
 
-    {/* Symbol Group */}
+    {/* Symbol Group (Left Aligned) */}
     <g transform="translate(10, 5)">
       {/* Outer Tech Ring (Left - Dark) */}
       <path d="M25 48 A 20 20 0 1 1 25 8" stroke="#005c2b" strokeWidth="4" strokeLinecap="round" />
@@ -37,13 +37,35 @@ export const NabahaLogo: React.FC<{ className?: string }> = ({ className }) => (
     </g>
 
     {/* Text Group */}
-    {/* Arabic Text */}
-    <text x="70" y="42" fontFamily="Tajawal, sans-serif" fontSize="28" fontWeight="700" fill="#005c2b">نباهة</text>
+    {/* Divider Line at x=150 */}
+    <line x1="150" y1="15" x2="150" y2="45" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" />
+
+    {/* Arabic Text - Anchored End (Right aligned to divider) */}
+    {/* x position is slightly left of divider (140) */}
+    <text 
+      x="140" 
+      y="42" 
+      textAnchor="end" 
+      fontFamily="Tajawal, sans-serif" 
+      fontSize="28" 
+      fontWeight="700" 
+      fill="#005c2b"
+    >
+      نباهة
+    </text>
     
-    {/* Divider */}
-    <line x1="145" y1="15" x2="145" y2="45" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" />
-    
-    {/* English Text */}
-    <text x="160" y="40" fontFamily="Inter, sans-serif" fontSize="22" fontWeight="600" fill="#334155">Nabaha</text>
+    {/* English Text - Anchored Start (Left aligned from divider) */}
+    {/* x position is slightly right of divider (160) */}
+    <text 
+      x="160" 
+      y="40" 
+      textAnchor="start" 
+      fontFamily="Inter, sans-serif" 
+      fontSize="22" 
+      fontWeight="600" 
+      fill="#334155"
+    >
+      Nabaha
+    </text>
   </svg>
 );
